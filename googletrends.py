@@ -3,7 +3,6 @@ import requests
 from bs4 import BeautifulSoup
 from openai import OpenAI
 import pandas as pd
-import time
 
 client = OpenAI(api_key='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')
 
@@ -47,12 +46,11 @@ def generate_newsletter(trends_info):
     
     response = client.chat.completions.create(
         model="gpt-4o",
-       messages=[{"role": "system", "content": "You are an AI language model that specializes in generating professional and informative LinkedIn newsletters. You will summarize trending topics and their recent developments in a way that is engaging and suitable for a professional audience."},
+        messages=[{"role": "system", "content": "You are an AI language model that specializes in generating professional and informative LinkedIn newsletters. You will summarize trending topics and their recent developments in a way that is engaging and suitable for a professional audience."},
               {"role": "user", "content": prompt}],
         max_tokens=1500
     )
-    
-    return response.content[0].text.strip()
+    return response.choices[0].message.content.strip()
 
 # Putting It All Together
 def create_newsletter():
