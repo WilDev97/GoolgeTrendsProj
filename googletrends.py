@@ -4,7 +4,13 @@ from bs4 import BeautifulSoup
 from openai import OpenAI
 import pandas as pd
 import re
+import json
+import sys
+
+
+sys.stdout.reconfigure(encoding='utf-8')
 client = OpenAI(api_key='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')
+
 
 # Step 1: Extract Trends from Google Trends
 def get_trending_topics():
@@ -14,7 +20,7 @@ def get_trending_topics():
     return trending_topics
 
 # Step 2: Search Google (using requests and BeautifulSoup instead of googlesearch-python)
-def google_search(query, num_results=5):
+def google_search(query, num_results=20):
     search_results = []
     url = f"https://www.google.com/search?q={query}&num={num_results}"
     headers = {
@@ -41,7 +47,7 @@ def generate_newsletter(trends_info):
     prompt = f"""
     Write a LinkedIn newsletter summarizing the following trending topics and their recent developments:
     {trends_info}
-    The newsletter should be engaging, informative, and suitable for a professional audience(avoid using the word professional). Your newsletter name is TrendScribe AI. Make sure to reference yourself in the beginning and end. Give details about the trends. Do not just give broad summaries of the trends
+    The newsletter should be engaging and informative. Your newsletter name is TrendScribe AI. Make sure to reference yourself in the beginning and end. Provide detailed information about each trend, including specific examples, recent statistics, and quotes from industry experts where relevant. Explain the significance of each trend, how it is impacting various industries, and what the future outlook might be. Avoid broad summaries and focus on providing in-depth analysis and insights.
     """
     
     response = client.chat.completions.create(
@@ -70,3 +76,6 @@ def create_newsletter():
 if __name__ == "__main__":
     newsletter_content = create_newsletter()
     print(newsletter_content)
+
+json_news_letter = json.dumps(newsletter_content)
+print(json_news_letter)
